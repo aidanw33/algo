@@ -1,58 +1,11 @@
-package PS3;
+package autosink;
 
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Stack;
 
-import javax.print.DocFlavor.STRING;
 
 public class Auto_sink {
-
-
-    /*
-     * Class represents a city
-     */
-    class City 
-    {
-        string cityName;
-        int costToTravel;
-        City(string cityName, int costToTravel)
-        {
-            this.cityName = cityName;
-            this.costToTravel = costToTravel;
-        }
-    }
-
-    /*
-     * Class represents a dag
-     */
-    class Graph
-    {
-        int numOfCities;
-        HashMap<STRING, LinkedList<City>> map;
-
-        Graph(int numOfCities)
-        {
-            this.numOfCities = numOfCities;
-            map = new HashMap<string, LinkedList<City>>();
-        }
-
-        void addEdge(string originCity, City destCity)
-        {
-            //check if originCity is in the map yet
-            if(map.containsKey(originCity))
-                map.get(originCity).add(destCity);
-            else
-            {
-                LinkedList<City> newList = new LinkedList<City>();
-                newList.add(destCity);
-                map.put(originCity, newList);
-            }
-        }
-    }
-
-
-
 
 	public static void main(String args[])
 	{
@@ -71,27 +24,41 @@ public class Auto_sink {
         for(int i = 0; i < numOfCities; i++)
         {
             String cityName = input.next();
-            String cityToll = input.next();
+            int cityToll = input.nextInt();
             City newCity = new City(cityName, cityToll);
             listOfCities.put(cityName, newCity);
         }
+        
+        graphOfCities.listOfCities = listOfCities;
 
         int numberOfHighways = input.nextInt();        
 
         for(int i = 0; i < numberOfHighways; i++)
         {
-            string originHighway = input.next();
-            string destHighway = input.next();
+            String originHighway = input.next();
+            String destHighway = input.next();
 
             graphOfCities.addEdge(originHighway, listOfCities.get(destHighway));
         }
         
         int numOfTrips = input.nextInt();
+        
+        Stack<String> topologicallySortedStack = graphOfCities.topologicalSort();
 
         for(int i = 0; i < numOfTrips; i++)
         {
-
+        	String originCity = input.next();
+        	String destCity = input.next();
+        	
+        	@SuppressWarnings("unchecked")
+			Stack<String> cloneStack = (Stack<String>) topologicallySortedStack.clone();
+        	
+			String shortestPath = graphOfCities.findShortestPath(originCity, destCity, cloneStack);
+        
+        	System.out.println(shortestPath);
         }
+        
+        input.close();
     }
 
 }
